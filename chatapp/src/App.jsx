@@ -3,7 +3,7 @@ import "./App.css";
 import { io } from "socket.io-client";
 
 //make the connection with the backed
-const socket = io("http://localhost:5000");
+const socket = io("https://hike-chatapp.onrender.com");
 
 function App() {
   const [name, setName] = useState("");
@@ -229,57 +229,57 @@ function App() {
                 <div key={idx}>{line}</div>
               ))}
             </div>
-            <div style={{display:"inline-flex", gap:"5px"}}> 
-            <input
-              style={{
-                padding: "12px 15px",
-                width: "300px", // Fixed width works better than percentage for inputs
-                background: "#f5f5f5",
-                borderRadius: "10px",
-                border: "2px solid #ddd",
-                outline: "none",
-                fontSize: "16px",
-                margin: "15px 0",
-                color: "blueviolet",
-                transition: "all 0.3s ease",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                textAlign: "center",
-                display: "block", // Ensures proper centering
-                // Hover and focus effects
-                ":hover": {
-                  borderColor: "#aaa",
-                },
-                ":focus": {
-                  borderColor: "#4285f4",
-                  boxShadow: "0 0 0 2px rgba(66, 133, 244, 0.2)",
-                  background: "#fff",
-                },
-              }}
-              type="text"
-              placeholder="Enter your message"
-              value={message}
-              onChange={(e) => {
-                setMessage(e.target.value);
-              }}
-              required
-            />
-            <button
-              type="submit"
-              onClick={sendMessage}
-              style={{
-                padding: "5px 10px",
-                margin: "15px 0",
-                border: "2px solid green",
-                width: "100px",
-                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                display: "block",
-                borderRadius: "10px",
-                textAlign: "center",
-                color: "green",
-              }}
-            >
-              send
-            </button>
+            <div style={{ display: "inline-flex", gap: "5px" }}>
+              <input
+                style={{
+                  padding: "12px 15px",
+                  width: "300px", // Fixed width works better than percentage for inputs
+                  background: "#f5f5f5",
+                  borderRadius: "10px",
+                  border: "2px solid #ddd",
+                  outline: "none",
+                  fontSize: "16px",
+                  margin: "15px 0",
+                  color: "blueviolet",
+                  transition: "all 0.3s ease",
+                  boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                  textAlign: "center",
+                  display: "block", // Ensures proper centering
+                  // Hover and focus effects
+                  ":hover": {
+                    borderColor: "#aaa",
+                  },
+                  ":focus": {
+                    borderColor: "#4285f4",
+                    boxShadow: "0 0 0 2px rgba(66, 133, 244, 0.2)",
+                    background: "#fff",
+                  },
+                }}
+                type="text"
+                placeholder="Enter your message"
+                value={message}
+                onChange={(e) => {
+                  setMessage(e.target.value);
+                }}
+                required
+              />
+              <button
+                type="submit"
+                onClick={sendMessage}
+                style={{
+                  padding: "5px 10px",
+                  margin: "15px 0",
+                  border: "2px solid green",
+                  width: "100px",
+                  boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                  display: "block",
+                  borderRadius: "10px",
+                  textAlign: "center",
+                  color: "green",
+                }}
+              >
+                send
+              </button>
             </div>
           </>
         )}
