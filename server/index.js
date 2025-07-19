@@ -45,6 +45,21 @@ io.on("connection", (socket) => {
     }
   });
 
+  //user is typing public or golbally to all
+  socket.on("typing",(name)=>{
+    console.log(`${name} is typing`);
+    socket.broadcast.emit("typing",name);//everone will get to know that the a user si typing
+  })
+
+  //user is typing only to the private user
+  socket.on("privateTyping",(from,to)=>{
+const userId=Object.keys(users).find((id)=> users[id]===to);
+if(userId)
+{
+    io.to(userId).emit("typing",from)
+}
+  })
+
   // Disconnect
   socket.on("disconnect", () => {
     const name = users[socket.id];

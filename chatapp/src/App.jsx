@@ -11,6 +11,7 @@ function App() {
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState([]);
   const [userList, setUserList] = useState([]);
+  const [typingUser, setTypingUser] = useState("");
   const [privateTarget, setPrivateTarget] = useState("");
 
   //server se events ko listen karo
@@ -35,12 +36,25 @@ function App() {
       setUserList(user);
     });
 
+    socket.on("typing", (name) => {
+      setTypingUser(name);
+      setTimeout(() => setTypingUser(""), 1500);
+    });
+    socket.on("privateTyping", (from) => {
+  setTypingUser(from);
+  setTimeout(() => setTypingUser(""), 1500);
+});
+
+
     // Cleanup function
     return () => {
       socket.off("receivedMessage");
       socket.off("personalMessage");
       socket.off("joined");
-      socket.off("userList");
+      socket.off("UserList");
+      socket.off("typing");
+      socket.off("privateTyping");
+
     };
   }, []);
 
@@ -82,6 +96,7 @@ function App() {
           display: "flex",
           flexDirection: "column",
           minHeight: "100vh",
+          backgroundColor:"rgba(246, 242, 134, 1)"
         }}
       >
         {!enter ? (
@@ -95,7 +110,7 @@ function App() {
                 padding: "15px 20px", // Increased padding
                 margin: "20px auto", // Added margin for spacing
                 borderRadius: "8px", // Added rounded corners
-                color: "white", // Changed text color
+                color: "black", // Changed text color
                 width: "80%", // Constrained width
                 maxWidth: "500px", // Maximum width
                 boxShadow: "0 4px 6px rgba(0,0,0,0.1)", // Added subtle shadow
@@ -176,15 +191,16 @@ function App() {
             >
               Hey! {name}
             </h2>
-            <div>
+            <div style={{alignItems:"start",justifyContent:"start"}}>
               <select
                 style={{
                   textAlign: "left",
                   display: "block",
                   background: "yellowgreen",
-                  padding: "5px 15px",
+                  padding: "10px 15px",
                   margin: "10px",
-                  borderRadius: "8px",
+                  borderRadius: "5px",
+                  width:"150px"
                 }}
                 onChange={(e) => setPrivateTarget(e.target.value)}
                 value={privateTarget}
@@ -192,12 +208,13 @@ function App() {
                 <option
                   value=""
                   style={{
-                    textAlign: "left",
+                    
                     display: "block",
                     background: "yellowgreen",
                     padding: "5px 15px",
                     margin: "10px",
                     borderRadius: "8px",
+                   
                   }}
                 >
                   Connect With
@@ -221,19 +238,25 @@ function App() {
                         {item}
                       </option>
                     );
-                  })}
-              </select>
-            </div>
-            <div>
-              {chat.map((line, idx) => (
-                <div key={idx}>{line}</div>
-              ))}
-            </div>
-            <div style={{ display: "inline-flex", gap: "5px" }}>
-              <input
-                style={{
-                  padding: "12px 15px",
-                  width: "300px", // Fixed width works better than percentage for inputs
+                    })}
+                  </select>
+                </div>
+                <div style={{textAlign:"left",alignItems:"flex-start"}}>
+                  {chat.map((line, idx) => (
+                  <div key={idx}>{line}</div>
+                  ))}
+                </div>
+                <div style={{ display: "inline-flex", gap: "10px" }}>
+                  {typingUser && (
+                  <p style={{ color: "gray", fontStyle: "italic" }}>
+                    {typingUser}
+                  </p>
+                  )}
+
+                  <input
+                  style={{
+                    padding: "15px 15px",
+                    width: "230px", // Fixed width works better than percentage for inputs
                   background: "#f5f5f5",
                   borderRadius: "10px",
                   border: "2px solid #ddd",
@@ -260,6 +283,14 @@ function App() {
                 value={message}
                 onChange={(e) => {
                   setMessage(e.target.value);
+                  if (privateTarget) {
+                    socket.emit("privateTyping", {
+                      to: privateTarget,
+                      from: name,
+                    });
+                  } else {
+                    socket.emit("typing",name);
+                  }
                 }}
                 required
               />
@@ -270,7 +301,7 @@ function App() {
                   padding: "5px 10px",
                   margin: "15px 0",
                   border: "2px solid green",
-                  width: "100px",
+                  width: "90px",
                   boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
                   display: "block",
                   borderRadius: "10px",
